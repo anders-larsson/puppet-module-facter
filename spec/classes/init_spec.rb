@@ -264,6 +264,53 @@ describe 'facter' do
     it { should contain_exec('mkdir_p-/etc/facter/facts.d') }
   end
 
+  context 'with facts specified as a hash and values stored as strings or arrays on RedHat' do
+    let(:facts) { { :osfamily => 'RedHat' } }
+    let(:params) do
+      {
+        :facts_file => "file.txt",
+        :facts => {
+          'fact1' => {
+            'value' => 'fact1value',
+          },
+          'fact2' => {
+            'value' => [ 'fact2value1', 'fact2value2' ],
+            'file'  => 'file2.txt',
+          },
+        }
+      }
+    end
+
+    it { should contain_file('facts_file').with({
+        'ensure'  => 'file',
+        'path'    => '/etc/facter/facts.d/file.txt',
+        'owner'   => 'root',
+        'group'   => 'root',
+        'mode'    => '0644',
+        'require' => 'File[facts_d_directory]',
+      })
+    }
+
+    it { should contain_file('facts_file_fact2').with({
+        'ensure'  => 'file',
+        'path'    => '/etc/facter/facts.d/file2.txt',
+        'owner'   => 'root',
+        'group'   => 'root',
+        'mode'    => '0644',
+        'require' => 'File[facts_d_directory]',
+      })
+    }
+
+    it { should contain_class('Facter::Fact[fact1]')}
+    it { should contain_class('Facter::Fact[fact2]')}
+    it { should contain_class('facter') }
+    it { should contain_package('facter') }
+    it { should contain_file('facts_d_directory') }
+    it { should contain_exec('mkdir_p-/etc/facter/facts.d') }
+  end
+
+
+
   context 'with all options specified' do
     let(:facts) { { :osfamily => 'RedHat' } }
     let(:params) do

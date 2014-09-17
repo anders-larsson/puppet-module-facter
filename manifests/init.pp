@@ -19,6 +19,7 @@ class facter (
   $facts_file_owner       = 'root',
   $facts_file_group       = 'root',
   $facts_file_mode        = '0644',
+  $fact_separator         = ',',
 ) {
 
   validate_string($package_ensure)

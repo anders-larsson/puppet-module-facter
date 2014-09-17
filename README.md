@@ -112,6 +112,12 @@ Four digit mode of facts_file file.
 
 - *Default*: 0644
 
+fact_separator
+--------------
+Character used to separate values in $facter::facts
+
+- *Default*: ','
+
 ===
 
 # Define `facter::fact`
@@ -149,9 +155,32 @@ value
 -----
 Value for the fact
 
+Value can either be defined as a string or an array of multiple values
+
+value_hiera_merge
+-----------
+Boolean to control merges of all found instances of value in Hiera. This is useful
+for specifying values at different levels of the hieracy.
+
+This occurs inside the define and requires deep merging to be present for Hiera.
+If deep merging is not configured it will fall back to native merging and only
+the most recent data from hiera will be used.
+
+More information regarding deep merging can be found in the link below:
+https://docs.puppetlabs.com/hiera/1/lookup_types.html#deep-merging-in-hiera--120
+
+
+- *Default:* false
+
 match
 -----
 String to match to replace existing line.
 Default value matches fact= on a single new line without whitespaces after equal sign.
 
 - *Default*: ^$name=\S*$
+
+separator
+---------
+String to use as separator between entries in value if value is an array
+
+- *Default*: $facter::fact_separator
